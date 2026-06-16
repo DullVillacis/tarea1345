@@ -1,0 +1,24 @@
+{
+  "name": "taller-mongo-node",
+  "version": "1.0.0",
+  "description": "Taller: Backend Node.js + MongoDB (schemaless) + Postman. Demuestra estructura variable y consultas dinamicas.",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "seed": "node src/seed.js"
+  },
+  "keywords": [
+    "mongodb",
+    "node",
+    "express",
+    "schemaless",
+    "taller"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2",
+    "mongodb": "^6.8.0"
+  }
+}
