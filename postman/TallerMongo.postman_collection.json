@@ -1,0 +1,261 @@
+{
+  "info": {
+    "name": "Taller Node + MongoDB (schemaless)",
+    "description": "Coleccion del taller. Demuestra estructura variable y consultas dinamicas con el driver nativo de MongoDB. Variable baseUrl = http://localhost:3000",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "productoId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "00 - Info de la API",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] }
+      }
+    },
+    {
+      "name": "CRUD",
+      "item": [
+        {
+          "name": "Crear producto (estructura libre)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "if (json._id) { pm.collectionVariables.set('productoId', json._id); }",
+                  "pm.test('status 201', () => pm.response.to.have.status(201));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"categoria\": \"dron\",\n  \"nombre\": \"Dron DJI Mini\",\n  \"autonomia_min\": 34,\n  \"camara\": { \"resolucion\": \"4K\", \"fps\": 60 },\n  \"incluye\": [\"bateria\", \"control\", \"cargador\"],\n  \"peso_gramos\": 249,\n  \"requiere_licencia\": false\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/productos", "host": ["{{baseUrl}}"], "path": ["productos"] }
+          }
+        },
+        {
+          "name": "Obtener por id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/productos/{{productoId}}", "host": ["{{baseUrl}}"], "path": ["productos", "{{productoId}}"] }
+          }
+        },
+        {
+          "name": "Actualizar (agregar campo nuevo)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"oferta_relampago\": true,\n  \"descuento_pct\": 15\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/productos/{{productoId}}", "host": ["{{baseUrl}}"], "path": ["productos", "{{productoId}}"] }
+          }
+        },
+        {
+          "name": "Eliminar",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/productos/{{productoId}}", "host": ["{{baseUrl}}"], "path": ["productos", "{{productoId}}"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultas dinamicas",
+      "item": [
+        {
+          "name": "Todos los productos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/productos", "host": ["{{baseUrl}}"], "path": ["productos"] }
+          }
+        },
+        {
+          "name": "Igualdad exacta (categoria=laptop)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?categoria=laptop",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [{ "key": "categoria", "value": "laptop" }]
+            }
+          }
+        },
+        {
+          "name": "Rango de precio (_min / _max)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?precio_min=100&precio_max=1000",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [
+                { "key": "precio_min", "value": "100" },
+                { "key": "precio_max", "value": "1000" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Busqueda parcial (_like / regex)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?nombre_like=cafe",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [{ "key": "nombre_like", "value": "cafe" }]
+            }
+          }
+        },
+        {
+          "name": "Lista de valores (_in)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?categoria_in=libro,smartphone",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [{ "key": "categoria_in", "value": "libro,smartphone" }]
+            }
+          }
+        },
+        {
+          "name": "Existencia de campo (_exists)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?stock_exists=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [{ "key": "stock_exists", "value": "true" }]
+            }
+          }
+        },
+        {
+          "name": "Campo anidado (dot notation)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?specs.ram_gb_min=8",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [{ "key": "specs.ram_gb_min", "value": "8" }]
+            }
+          }
+        },
+        {
+          "name": "Busqueda global (q)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?q=apple",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [{ "key": "q", "value": "apple" }]
+            }
+          }
+        },
+        {
+          "name": "Orden + paginacion + proyeccion",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?sort=precio&order=desc&page=1&limit=3&fields=nombre,precio",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [
+                { "key": "sort", "value": "precio" },
+                { "key": "order", "value": "desc" },
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "3" },
+                { "key": "fields", "value": "nombre,precio" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Combinada (varios filtros juntos)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/productos?categoria_in=laptop,smartphone&precio_max=1500&sort=precio&order=asc&fields=nombre,categoria,precio",
+              "host": ["{{baseUrl}}"],
+              "path": ["productos"],
+              "query": [
+                { "key": "categoria_in", "value": "laptop,smartphone" },
+                { "key": "precio_max", "value": "1500" },
+                { "key": "sort", "value": "precio" },
+                { "key": "order", "value": "asc" },
+                { "key": "fields", "value": "nombre,categoria,precio" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Schemaless y agregaciones",
+      "item": [
+        {
+          "name": "Quien TIENE el campo specs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/productos/buscar/existe/specs", "host": ["{{baseUrl}}"], "path": ["productos", "buscar", "existe", "specs"] }
+          }
+        },
+        {
+          "name": "Quien TIENE el campo autor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/productos/buscar/existe/autor", "host": ["{{baseUrl}}"], "path": ["productos", "buscar", "existe", "autor"] }
+          }
+        },
+        {
+          "name": "Agregacion por categoria",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/productos/stats/categoria", "host": ["{{baseUrl}}"], "path": ["productos", "stats", "categoria"] }
+          }
+        },
+        {
+          "name": "Mapa de campos (cuantos docs tienen cada campo)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/productos/stats/campos", "host": ["{{baseUrl}}"], "path": ["productos", "stats", "campos"] }
+          }
+        }
+      ]
+    }
+  ]
+}
