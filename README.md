@@ -18,13 +18,19 @@ nativo `mongodb` (no Mongoose) para que nada obligue una forma a los documentos.
 
 ```
 src/
-  config/db.js        conexion a MongoDB
-  server.js           servidor Express
-  seed.js             carga 10 productos de ejemplo
-  queryBuilder.js     query params -> filtro de MongoDB
-  routes/productos.js endpoints
-postman/              coleccion para importar
+  config/db.js         conexion a MongoDB
+  models/producto.js   capa de modelo (operaciones de la coleccion, SIN campos required)
+  routes/productos.js  endpoints (solo manejan HTTP y usan el modelo)
+  queryBuilder.js      query params -> filtro de MongoDB
+  server.js            servidor Express
+  seed.js              carga 10 productos de ejemplo
+postman/               coleccion para importar
 ```
+
+El modelo (`src/models/producto.js`) concentra todas las operaciones contra la coleccion
+(`crear`, `buscar`, `actualizar`, `eliminar`, agregaciones). A proposito **no valida campos
+obligatorios**: `crear` acepta cualquier objeto. Asi se mantiene el schemaless aunque exista
+una capa de modelo.
 
 ## Pasos (lo que se hace en clase)
 
